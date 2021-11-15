@@ -4,17 +4,47 @@ from django.shortcuts import render, HttpResponse, redirect
 
 
 def initial_permission(request, user_obj):
-    # °Ñ userµÄid·ÅÈësession
+    # æŠŠ userçš„idæ”¾å…¥session
     request.session['user_id'] = user_obj.pk
-
-    # ÎÒÃÇÏÈ°ÑÓÃ»§¶ÔÓ¦µÄÓµÓĞµÄurlÌí¼ÓÈ¡³ö·Åµ½sessionÖĞ±¸ÓÃ£¨Í¨¹ıuser_obj¿ç±íµ½roleÔÙµ½permissionÄÃµ½url£©
+    # è·å–çš„è§’è‰²ç›¸å…³çš„query
     role_obj = user_obj.roles.all()
-    url_list = role_obj.values('permission__url')  # È¡³öµÄurlÊÇqueryset¶ÔÏó <QuerySet [{'permissions__url': '/user/'}, {'permissions__url': '/add/user/'}, {'permissions__url': '/role/'}]>
+    # è·¨ä¸‰ä¸ªè¡¨æŸ¥è¯¢åˆ°æƒé™ç›¸å…³ä¸œè¥¿æ”¾åœ¨åˆ—è¡¨ä¸­
+    permission_item = role_obj.values('permission__action', 'permission__url', 'permission__group__id')
+    print("dddd permission_item:%s" % permission_item)
+    """
+    <QuerySet [
+    {'permission__action': 'list', 'permission__url': '/app01/role', 'permission__group__id': 3},
+    {'permission__action': 'edit', 'permission__url': '/app01/role/edit(\\d+)/', 'permission__group__id': 3},
+    {'permission__action': 'delete', 'permission__url': '/app01/delete/(\\d+)', 'permission__group__id': 3},
+    {'permission__action': 'add', 'permission__url': '/app01/add/user', 'permission__group__id': 4},
+    {'permission__action': 'list', 'permission__url': '/app01/user', 'permission__group__id': 4},
+    {'permission__action': 'delete', 'permission__url': '/app01/delete/user', 'permission__group__id': 4},
+    {'permission__action': 'edit', 'permission__url': '/app01/edit/user', 'permission__group__id': 4}
+    ]>
+    """
 
-    permission_list = []
-    for i in url_list:
-        permission_list.append(i['permission__url'])
-    print("login permission_list:%s" % permission_list)
 
-    request.session['permissions_list'] = permission_list
+    # æ„å»ºä¸€ä¸ªæ–°çš„å­—å…¸å‚¨å­˜æå–åˆ°çš„æƒé™ç›¸å…³ä¸œè¥¿
+    permission_list = {}
+    for i in permission_item:
+        if i.get('permission__group__id') not in permission_list.keys():
+            permission_list[i.get('permission__group__id')] = {
+                'url': [i.get('permission__url'), ],
+                'action': [i.get('permission__action'), ]
+            }
+        else:
+            permission_list[i.get('permission__group__id')]['url'].append(i.get('permission__url'))
+            permission_list[i.get('permission__group__id')]['action'].append(i.get('permission__action'))
+
+    # å°†è·å–çš„æƒé™ç›¸å…³å­˜å‚¨åˆ°sessionä¸­
+    print("zzz permission_list:%s" % permission_list)
+    """
+    {
+        3: {'url': ['/app01/role', '/app01/role/edit(\\d+)/', '/app01/delete/(\\d+)'], 'action': ['list', 'edit', 'delete']},
+        4: {'url': ['/app01/add/user', '/app01/user', '/app01/delete/user', '/app01/edit/user'], 'action': ['add', 'list', 'delete', 'edit']}
+    }
+    """
+    request.session['permission_list'] = permission_list
+
+
 

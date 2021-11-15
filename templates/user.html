@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>名字</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in user_obj %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user.name }}</td>
+                <td>
+                    {% if per.edit %}
+                        <a class="btn btn-info" href="">编辑</a>
+                    {% endif %}
+                    {% if per.delete %}
+                        <a class="btn btn-danger" href="">删除</a>
+                    {% endif %}
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

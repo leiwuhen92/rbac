@@ -22,6 +22,15 @@ class Permission(models.Model):
     title = models.CharField(max_length=32)
     url = models.CharField(max_length=128)
     roles = models.ManyToManyField(to='Role')
+    action = models.CharField(max_length=16, default='')  # 设置一下默认值，免得报错
+    group = models.ForeignKey(to='PermissionGroup', default='1', on_delete=models.CASCADE)  # 设置一下默认值，免得报错
+
 
     def __str__(self):
         return self.title
+
+
+class PermissionGroup(models.Model):
+    title = models.CharField(max_length=32,)  # 设置一下默认值，免得报错
+
+    def __str__(self): return self.title
