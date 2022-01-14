@@ -33,4 +33,5 @@ class Permission(models.Model):
 class PermissionGroup(models.Model):
     title = models.CharField(max_length=32,)  # 设置一下默认值，免得报错
 
-    def __str__(self): return self.title
+    def __str__(self):
+        return self.title

@@ -47,4 +47,35 @@ def initial_permission(request, user_obj):
     request.session['permission_list'] = permission_list
 
 
+    # menu显示，至少需要url，title字段
+    action_dict = role_obj.values('permission__action', 'permission__url', 'permission__group__title').distinct()
+    print("action_dict：%s" % action_dict)
+    """
+    <QuerySet [
+    {'permission__action': 'list', 'permission__url': '/app01/role', 'permission__group__title': '角色管理'},
+    {'permission__action': 'edit', 'permission__url': '/app01/role/edit(\\d+)/', 'permission__group__title': '角色管理'},
+    {'permission__action': 'delete', 'permission__url': '/app01/delete/(\\d+)', 'permission__group__title': '角色管理'},
+    {'permission__action': 'add', 'permission__url': '/app01/add/user', 'permission__group__title': '用户管理'},
+    {'permission__action': 'list', 'permission__url': '/app01/user', 'permission__group__title': '用户管理'},
+    {'permission__action': 'delete', 'permission__url': '/app01/delete/user', 'permission__group__title': '用户管理'},
+    {'permission__action': 'edit', 'permission__url': '/app01/edit/user', 'permission__group__title': '用户管理'}
+    ]>
+    """
+    action_list = []
+    for i in action_dict:
+        if i.get("permission__action") == 'list':
+            action_list.append((i.get('permission__url'), i.get('permission__group__title')))
+
+    print("action_list:%s" % action_list)
+    """
+    [
+        ('/app01/role', '角色管理'),
+        ('/app01/user', '用户管理')
+    ]
+    """
+    # 把提取出的url放入session中  [('/user/', '用户管理')]
+    request.session['action_list'] = action_list
+
+
+
 

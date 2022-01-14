@@ -43,7 +43,9 @@ class Per(object):
 def user(request):
     user_obj = User.objects.all()
     per = Per(request)
-    return render(request, 'user.html', {'user_obj': user_obj, 'per': per})
+    action_list = request.session.get('action_list', [])
+
+    return render(request, 'user.html', {'user_obj': user_obj, 'per': per, 'action_list': action_list})
 
 
 def add_user(request):
