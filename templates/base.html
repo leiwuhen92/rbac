@@ -46,9 +46,8 @@
     </div>
     <div class="con">
         <div class="menu">
-            {%  for i in action_list %}
-                <p><a href=""{{ i.0 }}>{{ i.1 }}</a></p>
-            {%  endfor %}
+            {% load menu_tags %}
+            {% menu request %}
         </div>
         <div class="content">
             {% block content %}

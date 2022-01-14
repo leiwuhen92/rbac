@@ -55,7 +55,7 @@ def add_user(request):
 
 def role(request):
     user_obj = User.objects.all()
-    role_obj = user_obj.values('name', 'role__title')
+    role_obj = user_obj.values('name', 'roles__title')
     print("role role_obj:%s" % role_obj)
     return render(request, 'role.html', {'role_obj': role_obj})
 

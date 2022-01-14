@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    {% for i in action_list %}
+        <p><a href="{{ i.0 }}">{{ i.1 }}</a></p>
+    {% endfor %}
+</body>
+</html>
